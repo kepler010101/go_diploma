@@ -120,7 +120,9 @@ func TestRegisterSuccess(t *testing.T) {
 		t.Fatalf("expected status 200, got %d", rr.Code)
 	}
 
-	cookies := rr.Result().Cookies()
+	res := rr.Result()
+	t.Cleanup(func() { res.Body.Close() })
+	cookies := res.Cookies()
 	found := false
 	for _, c := range cookies {
 		if c.Name == "token" && c.Value == "token" {
@@ -313,11 +315,13 @@ func TestListOrdersSuccess(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", rr.Code)
 	}
-	if ct := rr.Result().Header.Get("Content-Type"); ct != "application/json" {
+	res := rr.Result()
+	t.Cleanup(func() { res.Body.Close() })
+	if ct := res.Header.Get("Content-Type"); ct != "application/json" {
 		t.Fatalf("expected application/json, got %s", ct)
 	}
 
-	body, err := io.ReadAll(rr.Result().Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		t.Fatalf("read body: %v", err)
 	}
@@ -395,11 +399,13 @@ func TestBalanceSuccess(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", rr.Code)
 	}
-	if ct := rr.Result().Header.Get("Content-Type"); ct != "application/json" {
+	res := rr.Result()
+	t.Cleanup(func() { res.Body.Close() })
+	if ct := res.Header.Get("Content-Type"); ct != "application/json" {
 		t.Fatalf("expected application/json, got %s", ct)
 	}
 
-	body, err := io.ReadAll(rr.Result().Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		t.Fatalf("read body: %v", err)
 	}
@@ -552,7 +558,9 @@ func TestWithdrawalsSuccess(t *testing.T) {
 		t.Fatalf("expected status 200, got %d", rr.Code)
 	}
 
-	body, err := io.ReadAll(rr.Result().Body)
+	res := rr.Result()
+	t.Cleanup(func() { res.Body.Close() })
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		t.Fatalf("read body: %v", err)
 	}

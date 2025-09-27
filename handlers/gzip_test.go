@@ -21,6 +21,7 @@ func TestGzipOrders(t *testing.T) {
 	h.ServeHTTP(rec, req)
 
 	res := rec.Result()
+	t.Cleanup(func() { res.Body.Close() })
 	if ce := res.Header.Get("Content-Encoding"); ce != "gzip" {
 		t.Fatalf("expected gzip encoding, got %q", ce)
 	}
@@ -52,6 +53,7 @@ func TestGzipWithdrawals(t *testing.T) {
 	h.ServeHTTP(rec, req)
 
 	res := rec.Result()
+	t.Cleanup(func() { res.Body.Close() })
 	if ce := res.Header.Get("Content-Encoding"); ce != "gzip" {
 		t.Fatalf("expected gzip encoding, got %q", ce)
 	}
@@ -113,6 +115,7 @@ func TestGzipSkipsOnNoContent(t *testing.T) {
 	h.ServeHTTP(rec, req)
 
 	res := rec.Result()
+	t.Cleanup(func() { res.Body.Close() })
 	if res.StatusCode != http.StatusNoContent {
 		t.Fatalf("expected 204, got %d", res.StatusCode)
 	}
